@@ -2,6 +2,7 @@
 
 import { Zap, TrendingUp, BadgeCheck } from 'lucide-react'
 import Image from 'next/image'
+import { Button } from '../ui/button'
 
 export function AgentsSection() {
   return (
@@ -11,9 +12,9 @@ export function AgentsSection() {
         <div className="flex justify-center relative">
           {/* overlay (ONLY LG) */}
           <div
-            className="hidden lg:block h-[950px] w-[730px] absolute top-[50%] left-[50%] -z-30 
-              translate-x-[-50%] translate-y-[-50%] 
-              bg-center bg-no-repeat bg-cover rounded-[12px]"
+            className="hidden lg:block dark:hidden h-[950px] w-[730px] absolute top-[50%] left-[50%] -z-30 
+    translate-x-[-50%] translate-y-[-50%] 
+    bg-center bg-no-repeat bg-cover rounded-[12px]"
             style={{ backgroundImage: "url('/overly.png')" }}
           />
 
@@ -86,12 +87,24 @@ export function AgentsSection() {
         {/* Right Content */}
         <div className="space-y-8">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-200 dark:border-white/10 bg-orange-50 dark:bg-white/5 w-fit">
-            <div className="w-2 h-2 rounded-full bg-[#FF6B5B]" />
-            <span className="text-sm font-medium text-gray-700 dark:text-white/80">
-              For Agents
-            </span>
-          </div>
+           <div
+              className="inline-block rounded-full p-[4px]"
+              style={{
+                background:
+                  "linear-gradient(180deg, #79FFD2 0%, #017850 100%)",
+              }}
+            >
+              <Button
+                className="rounded-full px-6 md:px-8 h-[48px] text-sm md:text-base text-[#4B4B4B]"
+                style={{
+                  background:
+                    "linear-gradient(90deg, #E8FFF7 0%, #FFF3F2 50%, #D5FFF1 100%)",
+                }}
+              >
+                <span className='w-2 h-2 rounded-full bg-[#00C274]'></span>
+                For Agents 
+              </Button>
+            </div>
 
           {/* Main Heading */}
           <div className="space-y-4">

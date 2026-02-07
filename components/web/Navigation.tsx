@@ -1,110 +1,6 @@
 
 
 
-// 'use client'
-
-// import { useEffect, useState } from 'react'
-// import { useTheme } from 'next-themes'
-// import Image from 'next/image'
-// import { Button } from '@/components/ui/button'
-// import { Moon, Sun } from 'lucide-react'
-
-// export function Navigation() {
-//   const [mounted, setMounted] = useState(false)
-//   const { theme, setTheme } = useTheme()
-
-//   useEffect(() => setMounted(true), [])
-//   if (!mounted) return null
-
-//   return (
-//     <nav className="sticky top-0 z-50 w-full border-b border-border bg-[#C9FFED66] dark:bg-[#0b0f14]/60 backdrop-blur">
-//       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-//         <div className="flex h-16 items-center justify-between">
-//           {/* Logo */}
-//           <div className="flex items-center gap-2">
-//             <Image
-//               src="/logo.png"
-//               alt="Logo"
-//               width={1000}
-//               height={100}
-//               className="w-[148px] h-[48px]"
-//             />
-//           </div>
-
-//           {/* Menu Items */}
-//           <div className="hidden md:flex items-center gap-8">
-//             {['Requirements', 'Buying Intent', 'Agent', 'Brokerages', 'Investor'].map(
-//               (item) => (
-//                 <a
-//                   key={item}
-//                   href="#"
-//                   className="text-base font-medium text-[#4B4B4B] dark:text-white/80 hover:text-[#F88379] transition-colors"
-//                 >
-//                   {item}
-//                 </a>
-//               )
-//             )}
-//           </div>
-
-//           {/* Right Actions */}
-//           <div className="flex items-center gap-3 sm:gap-4">
-//             {/* Theme Toggle */}
-//             <div
-//               className="hidden sm:flex items-center gap-1 rounded-[8px] p-2"
-//               style={{
-//                 background: "linear-gradient(90deg, #E8E8E8 0%, #E5E5E5 100%)",
-//               }}
-//             >
-//               <button
-//                 type="button"
-//                 onClick={() => setTheme("light")}
-//                 className={`flex items-center gap-2 px-3 py-2 rounded-[8px] text-sm font-medium transition-all ${theme === "light"
-//                     ? "bg-[#BAFFE8] text-[#4B4B4B]"
-//                     : "text-[#4B4B4B] hover:text-[#F88379]"
-//                   }`}
-//                 aria-label="Light mode"
-//               >
-//                 <Sun className="h-4 w-4" />
-//                 Light
-//               </button>
-
-//               <button
-//                 type="button"
-//                 onClick={() => setTheme("dark")}
-//                 className={`flex items-center gap-2 px-3 py-1.5 rounded-[12px] text-sm font-medium transition-all ${theme === "dark"
-//                     ? "bg-[#BAFFE8] text-[#4B4B4B]"
-//                     : "text-[#4B4B4B] hover:text-[#F88379]"
-//                   }`}
-//                 aria-label="Dark mode"
-//               >
-//                 <Moon className="h-4 w-4" />
-//                 Dark
-//               </button>
-//             </div>
-
-
-//             {/* Buttons */}
-//             <div className="hidden sm:flex gap-2">
-//               <Button
-//                 variant="ghost"
-//                 className="text-[#F88379] border border-[#F88379] h-[50px] px-[32px] rounded-[8px] hover:text-[#F88379]"
-//               >
-//                 Login
-//               </Button>
-//               <Button className="bg-[#7FFFD4] hover:bg-[#7FFFD4]/90 text-[#4B4B4B] h-[50px] rounded-[8px]">
-//                 Registration
-//               </Button>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </nav>
-//   )
-// }
-
-
-
-
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -132,9 +28,9 @@ export function Navigation() {
   const navItems = ['Requirements', 'Buying Intent', 'Agent', 'Brokerages', 'Investor']
 
   return (
-    <nav className="sticky top-0 z-50 w-full shadow-md backdrop-blur">
+    <nav className="sticky top-0 z-50 w-full bg-[#C9FFED66] shadow-md backdrop-blur">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex py-[25px] items-center justify-between">
+        <div className="flex py-[20px] items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Image

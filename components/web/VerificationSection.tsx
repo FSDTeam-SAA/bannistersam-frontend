@@ -5,6 +5,7 @@
 
 import { Eye, Pentagon, BadgeCheck } from 'lucide-react'
 import Image from 'next/image'
+import { Button } from '../ui/button'
 
 export function VerificationSection() {
   return (
@@ -13,12 +14,24 @@ export function VerificationSection() {
         {/* Left Content */}
         <div className="space-y-8">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-200 bg-green-50 dark:border-white/10 dark:bg-white/5 w-fit">
-            <div className="w-2 h-2 rounded-full bg-[hsl(168,89%,45%)]" />
-            <span className="text-sm font-medium text-gray-700 dark:text-white/80">
-              Verification by Design
-            </span>
-          </div>
+         <div
+              className="inline-block rounded-full p-[4px]"
+              style={{
+                background:
+                  "linear-gradient(180deg, #79FFD2 0%, #017850 100%)",
+              }}
+            >
+              <Button
+                className="rounded-full px-6 md:px-8 h-[48px] text-sm md:text-base text-[#4B4B4B]"
+                style={{
+                  background:
+                    "linear-gradient(90deg, #E8FFF7 0%, #FFF3F2 50%, #D5FFF1 100%)",
+                }}
+              >
+                <span className='w-2 h-2 rounded-full bg-[#00C274]'></span>
+                Verification by Design 
+              </Button>
+            </div>
 
           {/* Main Heading */}
           <div className="space-y-4">

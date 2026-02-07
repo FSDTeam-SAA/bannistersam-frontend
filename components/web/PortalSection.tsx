@@ -6,6 +6,7 @@
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+import { Button } from '../ui/button'
 
 export function PortalSection() {
   const { theme, systemTheme } = useTheme()
@@ -31,9 +32,23 @@ export function PortalSection() {
         {/* Left Content */}
         <div className="order-2 lg:order-1">
                   {/* Badge */}
-        <div className="mb-[48px]">
-            <Image src="/potalbutton.png" alt="Badge" width={1000} height={1000} className='w-[263px] h-[61px] object-cover' />
-        </div>
+         <div
+              className="inline-block rounded-full p-[4px] mb-6"
+              style={{
+                background: 'linear-gradient(180deg, #79FFD2 0%, #017850 100%)',
+              }}
+            >
+              <Button
+                className="rounded-full px-6 md:px-8 h-[48px] text-sm md:text-base text-[#4B4B4B] 5555bg-transparent"
+                style={{
+                  background:
+                    'linear-gradient(90deg, #E8FFF7 0%, #FFF3F2 50%, #D5FFF1 100%)',
+                }}
+              >
+                <span className='w-2 h-2 rounded-full bg-[#00C274]'></span>
+                Not just a portal
+              </Button>
+            </div>
           <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-medium text-[#4B4B4B] dark:text-white">
             Clearer intent. <span className="text-[#F88379]">Better</span>
             <br />
