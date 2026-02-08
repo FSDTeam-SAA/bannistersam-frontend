@@ -21,7 +21,34 @@ body {
 
 
 
-html {
+/* html {
   scroll-behavior: smooth;
   scroll-padding-top: 90px; 
+} */
+
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 45px; 
+}
+
+/* Tablet */
+@media (min-width: 640px) {
+  html {
+    scroll-padding-top: 40px;
+  }
+}
+
+/* Laptop */
+@media (min-width: 1024px) {
+  html {
+    scroll-padding-top: 70px;
+  }
+}
+
+/* Desktop large */
+@media (min-width: 1280px) {
+  html {
+    scroll-padding-top: 90px;
+  }
 }
