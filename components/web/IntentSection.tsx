@@ -26,7 +26,7 @@ export default function PropertyIntent() {
   const buyerDots = ["bg-[#F88379]", "bg-[#FFAB25]", "bg-[#7FFFD4]"];
 
   return (
-    <div className="px-4 py-[84px] sm:px-6 lg:px-0">
+    <div className="px-2 py-[84px] sm:px-6 lg:px-0">
       <div className="container mx-auto">
         {/* ========= MOBILE / TABLET (NEW) ========= */}
         

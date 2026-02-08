@@ -381,7 +381,7 @@ const brokeragePlans: PricingPlan[] = [
 
 export function PricingSection() {
   return (
-    <section className="py-12 md:py-20 px-4 md:px-8 ">
+    <section className="py-12 md:py-20 px-2 md:px-8 ">
 
       {/* Agent Plans */}
       <div className="container mx-auto bg-white dark:bg-white/5 rounded-3xl p-6 md:px-12 pt-12 pb-7 shadow-xl dark:shadow-none border border-transparent dark:border-white/10">

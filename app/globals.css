@@ -18,3 +18,10 @@ body {
   background: #000000;
   color: #ffffff;
 }
+
+
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px; 
+}

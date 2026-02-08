@@ -48,7 +48,7 @@ export function PortfolioSection() {
   ]
 
   return (
-    <section className="py-12 md:py-20 px-4 sm:px-6 lg:px-2 ">
+    <section className="py-12 md:py-20 px-2 sm:px-6 lg:px-2 ">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-[140px] items-center">
 
@@ -163,13 +163,13 @@ export function PortfolioSection() {
                 { icon: TrendingUp, title: 'Tenancy expiry alerts' },
                 { icon: FileCheck, title: 'Portfolio performance metrics' },
               ].map((feature, idx) => (
-                <div key={idx} className="flex gap-4 items-start justify-center lg:justify-start">
+                <div key={idx} className="flex gap-4 items-center justify-start lg:justify-start">
                   <div className="flex-shrink-0 w-10 h-10 mt-1 bg-[#FFEFEE] dark:bg-white/10 rounded-full flex items-center justify-center">
                     <feature.icon className="w-6 h-6 text-[#4B4B4B] dark:text-white" />
                   </div>
 
                   <div>
-                    <h3 className="font-medium text-xl md:text-[24px] text-[#4B4B4B] dark:text-white">
+                    <h3 className="font-medium text-base md:text-[24px] text-[#4B4B4B] dark:text-white">
                       {feature.title}
                     </h3>
                   </div>

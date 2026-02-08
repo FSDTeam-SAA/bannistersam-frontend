@@ -26,11 +26,11 @@ export function PortalSection() {
       : '/potal.png'  
 
   return (
-    <section className="flex items-center px-4 sm:px-8">
-      <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+    <section className="flex items-center px-2 sm:px-8">
+      <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-x-8 items-center">
         
         {/* Left Content */}
-        <div className="order-2 lg:order-1">
+        <div className="order-1 lg:order-1">
                   {/* Badge */}
          <div
               className="inline-block rounded-full p-[4px] mb-6"
@@ -49,7 +49,7 @@ export function PortalSection() {
                 Not just a portal
               </Button>
             </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-medium text-[#4B4B4B] dark:text-white">
+          <h1 className="text-3xl sm:text-3xl lg:text-[64px] !leading-tight font-medium text-[#4B4B4B] dark:text-white">
             Clearer intent. <span className="text-[#F88379]">Better</span>
             <br />
             <span className="text-[#FF6B5B]">property</span> decisions.
@@ -61,7 +61,7 @@ export function PortalSection() {
         </div>
 
         {/* Right Image */}
-        <div className="order-1 lg:order-2 h-auto flex items-center justify-center">
+        <div className="order-2 lg:order-2 h-auto flex items-center justify-center">
           <Image
             src={imageSrc}
             alt="Portal Preview"

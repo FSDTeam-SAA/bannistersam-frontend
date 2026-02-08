@@ -10,37 +10,37 @@ import { Button } from '../ui/button'
 const Brokerage = () => {
   return (
     <section className="w-full py-12 md:py-20 lg:py-24 ">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-0">
+      <div className="container mx-auto px-3 sm:px-6 lg:px-0">
 
         {/* Badge */}
-         <div
-              className="inline-block rounded-full p-[4px] mb-6"
-              style={{
-                background:
-                  "linear-gradient(180deg, #79FFD2 0%, #017850 100%)",
-              }}
-            >
-              <Button
-                className="rounded-full px-6 md:px-8 h-[48px] text-sm md:text-base text-[#4B4B4B]"
-                style={{
-                  background:
-                    "linear-gradient(90deg, #E8FFF7 0%, #FFF3F2 50%, #D5FFF1 100%)",
-                }}
-              >
-                <span className='w-2 h-2 rounded-full bg-[#00C274]'></span>
-                For Brokerages 
-              </Button>
-            </div>
+        <div
+          className="inline-block rounded-full p-[4px] mb-6"
+          style={{
+            background:
+              "linear-gradient(180deg, #79FFD2 0%, #017850 100%)",
+          }}
+        >
+          <Button
+            className="rounded-full px-6 md:px-8 h-[48px] text-sm md:text-base text-[#4B4B4B]"
+            style={{
+              background:
+                "linear-gradient(90deg, #E8FFF7 0%, #FFF3F2 50%, #D5FFF1 100%)",
+            }}
+          >
+            <span className='w-2 h-2 rounded-full bg-[#00C274]'></span>
+            For Brokerages
+          </Button>
+        </div>
 
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-12 items-center">
 
           {/* Left Content */}
           <div className="text-center lg:text-left">
-               <h1 className="mb-6 text-3xl md:text-[64px] text-[#4B4B4B] font-medium leading-tight dark:text-white">
-                            Run your <span className="text-[#F88379]">brokerage</span>,
-                            <br />
-                            not just <span className="text-[#F88379]">ads</span>.
-                        </h1>
+            <h1 className="mb-6 text-3xl md:text-[64px] text-[#4B4B4B] font-medium leading-tight dark:text-white">
+              Run your <span className="text-[#F88379]">brokerage</span>,
+              <br />
+              not just <span className="text-[#F88379]">ads</span>.
+            </h1>
 
             <p className="mb-8 text-[#686868] dark:text-white/80 font-normal text-base sm:text-lg md:text-xl leading-relaxed">
               Get complete visibility into your team&apos;s performance. Manage agents,
