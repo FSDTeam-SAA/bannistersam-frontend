@@ -28,7 +28,7 @@ body {
 
 
 html {
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
   scroll-padding-top: 45px; 
 }
 
@@ -42,6 +42,7 @@ html {
 /* Laptop */
 @media (min-width: 1024px) {
   html {
+     scroll-behavior: smooth;
     scroll-padding-top: 70px;
   }
 }
@@ -49,6 +50,7 @@ html {
 /* Desktop large */
 @media (min-width: 1280px) {
   html {
+     scroll-behavior: smooth;
     scroll-padding-top: 90px;
   }
 }
