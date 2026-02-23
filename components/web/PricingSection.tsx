@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import { Check } from 'lucide-react'
 import { Button } from '../ui/button'
+import { RegistrationModal } from '../registration-forms/RegistrationModal'
 
 type PricingPlan = {
   name: string
@@ -146,46 +148,69 @@ const brokeragePlans: PricingPlan[] = [
 ]
 
 export function PricingSection() {
-  return (
-    <section className="relative overflow-hidden  py-14 sm:py-20 px-3 sm:px-6">
-      <div className="absolute top-[560px] left-[10%] h-[260px] w-[260px] bg-[#74F9D3] opacity-60 blur-[90px] rounded-full" />
+  const [registrationOpen, setRegistrationOpen] = useState(false)
 
-      <div className="relative container mx-auto">
-        <div className="text-center">
-          <div
-            className="inline-block rounded-[999px] p-[3px] mb-6"
-            style={{
-              background: 'linear-gradient(180deg, #79FFD2 0%, #017850 100%)',
-            }}
-          >
-            <Button
-              className="h-[40px] rounded-[999px] px-5 text-sm text-[#F88379]"
+  return (
+    <>
+      <section className="relative overflow-hidden  py-14 sm:py-20 px-3 sm:px-6">
+        <div className="absolute top-[560px] left-[10%] h-[260px] w-[260px] bg-[#74F9D3] opacity-60 blur-[90px] rounded-full" />
+
+        <div className="relative container mx-auto">
+          <div className="text-center">
+            <div
+              className="inline-block rounded-[999px] p-[3px] mb-6"
               style={{
                 background:
-                  'linear-gradient(90deg, #E8FFF7 0%, #FFF3F2 50%, #D5FFF1 100%)',
+                  'linear-gradient(180deg, #79FFD2 0%, #017850 100%)',
               }}
             >
-              <span className="h-2 w-2 rounded-full bg-[#00C274]" />
-              Pricing
-            </Button>
+              <Button
+                className="h-[40px] rounded-[999px] px-5 text-sm text-[#F88379]"
+                style={{
+                  background:
+                    'linear-gradient(90deg, #E8FFF7 0%, #FFF3F2 50%, #D5FFF1 100%)',
+                }}
+              >
+                <span className="h-2 w-2 rounded-full bg-[#00C274]" />
+                Pricing
+              </Button>
+            </div>
+
+            <h2 className="text-[34px] sm:text-[44px] lg:text-[64px] leading-tight font-medium text-[#4B4B4B] max-w-[924px] mx-auto dark:text-white">
+              Plans built for <span className="text-[#F88379]">UAE property</span>{' '}
+              professionals.
+            </h2>
           </div>
 
-          <h2 className="text-[34px] sm:text-[44px] lg:text-[64px] leading-tight font-medium text-[#4B4B4B] max-w-[924px] mx-auto dark:text-white">
-            Plans built for <span className="text-[#F88379]">UAE property</span>{' '}
-            professionals.
-          </h2>
+          <div className="mt-10 space-y-6">
+            <PricingGroup
+              title="Agent Plans - Early Registration"
+              plans={agentPlans}
+              onRegister={() => setRegistrationOpen(true)}
+            />
+            <PricingGroup
+              title="Brokerage Plans - Early Registration"
+              plans={brokeragePlans}
+              onRegister={() => setRegistrationOpen(true)}
+            />
+          </div>
         </div>
+      </section>
 
-        <div className="mt-10 space-y-6">
-          <PricingGroup title="Agent Plans - Early Registration" plans={agentPlans} />
-          <PricingGroup title="Brokerage Plans - Early Registration" plans={brokeragePlans} />
-        </div>
-      </div>
-    </section>
+      <RegistrationModal open={registrationOpen} onOpenChange={setRegistrationOpen} />
+    </>
   )
 }
 
-function PricingGroup({ title, plans }: { title: string; plans: PricingPlan[] }) {
+function PricingGroup({
+  title,
+  plans,
+  onRegister,
+}: {
+  title: string
+  plans: PricingPlan[]
+  onRegister: () => void
+}) {
   return (
     <div className="rounded-[16px] border border-[#D9D9DD] bg-white dark:bg-[#111316] dark:border-[#2A2D31] p-3 sm:p-5 lg:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
       <h3 className="text-[26px] sm:text-[36px] font-medium text-[#4B4B4B] dark:text-white mb-4">
@@ -194,14 +219,20 @@ function PricingGroup({ title, plans }: { title: string; plans: PricingPlan[] })
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
         {plans.map((plan) => (
-          <PricingCard key={plan.name} plan={plan} />
+          <PricingCard key={plan.name} plan={plan} onRegister={onRegister} />
         ))}
       </div>
     </div>
   )
 }
 
-function PricingCard({ plan }: { plan: PricingPlan }) {
+function PricingCard({
+  plan,
+  onRegister,
+}: {
+  plan: PricingPlan
+  onRegister: () => void
+}) {
   const cardClass = plan.isPopular
     ? 'bg-[#D6F8EC] dark:bg-[#14382F] border-[#7FE0BF]'
     : 'bg-[#FFFFFF] dark:bg-[#16191D] border-[#E8E8EC] dark:border-[#2C3137]'
@@ -253,12 +284,8 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
         </div>
         <p className="mt-3 text-xs text-[#8F8F95] dark:text-white/50">Annual options available</p>
         <Button
-          variant="outline"
-          className={`mt-2 h-[44px] w-full rounded-[8px] text-[20px] border-[#F5A59D] ${
-            plan.isPopular
-              ? 'bg-[#75E8C3] hover:bg-[#64ddb6] text-[#1F5A47] border-[#75E8C3]'
-              : 'bg-transparent text-[#F88379] hover:bg-[#FFF5F4] dark:hover:bg-[#2A1F1E]'
-          }`}
+          onClick={onRegister}
+          className="mt-2 h-[44px] w-full rounded-[8px] text-[20px] bg-[#7FFFD4] hover:bg-[#7FFFD4]/90 text-[#4B4B4B] border border-[#7FFFD4]"
         >
           Register Early
         </Button>

@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { Button } from '../ui/button'
-import { Check, Gift, X } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 
 const earlyHowItWorks = [
   'Complete your full public profile',
@@ -67,10 +67,10 @@ export function IncentivesSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <div className="rounded-[12px] border border-[#DBDBDB] dark:border-white/10 bg-[#F7FFFC] dark:bg-[#142720] p-5 sm:p-6 flex flex-col">
-            <div className="mb-4 flex items-center gap-3">
-              <span className="h-12 w-12 rounded-full bg-[#D8FFF2] dark:bg-[#204738] flex items-center justify-center">
-                <Gift className="h-5 w-5 text-[#45D3A7]" />
+              <span className="h-[80px] pt-5 mb-10 w-[80px] r">
+                <Image src="/icon15.png" alt="referral" width={1000} height={1000} className="h-[80px] w-[80px]" />
               </span>
+            <div className="mb-4 flex items-center gap-3">
               <h3 className="text-2xl sm:text-[32px] font-medium text-[#4B4B4B] dark:text-white">
                 Early Inventory Incentive
               </h3>
@@ -134,10 +134,10 @@ export function IncentivesSection() {
           </div>
 
           <div className="rounded-[12px] border border-[#DBDBDB] dark:border-white/10  dark:bg-[#2A1F1E] p-5 sm:p-6 flex flex-col">
-            <div className="mb-4 flex items-center gap-3">
-              <span className="h-12 w-12 rounded-full bg-[#FFE5E2] dark:bg-[#3D2724] flex items-center justify-center">
-                <Gift className="h-5 w-5 text-[#F88379]" />
+              <span className="h-[80px] pt-5 mb-10 w-[80px] r">
+                <Image src="/icon16.png" alt="referral" width={1000} height={1000} className="h-[80px] w-[80px]" />
               </span>
+            <div className="mb-4 flex items-center gap-3">
               <h3 className="text-2xl sm:text-[32px] font-medium text-[#4B4B4B] dark:text-white">
                 Referral Program
               </h3>

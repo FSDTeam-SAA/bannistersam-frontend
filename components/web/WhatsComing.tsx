@@ -91,19 +91,10 @@ export default function WhatsComing() {
         </div>
 
         {/* CTA */}
-   <div
-              className="inline-block rounded-[8px] p-[4px] mb-[48px] !text-base"
-              style={{
-                background: 'linear-gradient(180deg, #79FFD2 0%, #017850 100%)',
-              }}
-            >
+   <div className="inline-block rounded-[8px] mb-[48px] !text-base">
               <Button
                 onClick={() => setRegistrationOpen(true)}
-                className="rounded-[8px] px-6 md:px-8 h-[48px] text-sm md:text-base text-[#4B4B4B] 5555bg-transparent"
-                style={{
-                  background:
-                    'linear-gradient(90deg, #E8FFF7 0%, #FFF3F2 50%, #D5FFF1 100%)',
-                }}
+                className="rounded-[8px] px-6 md:px-8 h-[48px] text-sm md:text-base bg-[#7FFFD4] hover:bg-[#7FFFD4]/90 text-[#4B4B4B]"
               >
                Register Early
               </Button>
