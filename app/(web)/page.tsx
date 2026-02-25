@@ -25,7 +25,7 @@ import WhatsComing from '@/components/web/WhatsComing'
 export default function Home() {
   return (
     <div className="">
-      <Navigation />
+     
 
       {/* Requirements */}
       <section id="requirements">
@@ -68,7 +68,7 @@ export default function Home() {
       <Joindeal />
       <PricingSection />
       <IncentivesSection />
-      <Footer />
+  
     </div>
   )
 }
