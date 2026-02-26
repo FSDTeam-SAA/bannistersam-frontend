@@ -2,13 +2,14 @@
 
 
 import { useMemo, useState } from 'react';
-import { ChevronLeft, Info } from 'lucide-react';
+import { BadgeInfo, ChevronLeft, Info,  MapPin, Send } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import Image from 'next/image';
 
 type PropertyType = 'residential' | 'commercial';
 type TransactionType = 'rent' | 'sale';
@@ -43,6 +44,7 @@ type FormData = {
   configuration: string;
   selectedSubType: string;
   positionType: string; // residential only
+  rowType: string; // residential only (villa/townhouse)
 
   // Status
   propertyStatus: PropertyStatus;
@@ -99,24 +101,62 @@ type FormData = {
 };
 
 const residentialSubTypes = [
-  { id: 'apartment', label: 'Apartment', icon: '🏢' },
-  { id: 'villa', label: 'Villa', icon: '🏡' },
-  { id: 'townhouse', label: 'Townhouse', icon: '🏘️' },
-  { id: 'land', label: 'Land', icon: '🌳' },
+  { id: 'apartment', label: 'Apartment', icon: '/icon/1.png' },
+  { id: 'villa', label: 'Villa', icon: '/icon/2.png' },
+  { id: 'townhouse', label: 'Townhouse', icon: '/icon/3.png' },
+  { id: 'land', label: 'Land', icon: '/icon/4.png' },
 ];
 
 const commercialSubTypes = [
-  { id: 'office', label: 'Office', icon: '🏢' },
-  { id: 'retail', label: 'Retail / Shop', icon: '🛍️' },
-  { id: 'warehouse', label: 'Warehouse', icon: '📦' },
-  { id: 'showroom', label: 'Showroom', icon: '🎪' },
-  { id: 'restaurant', label: 'Restaurant / Cafe', icon: '🍽️' },
-  { id: 'industrial', label: 'Industrial', icon: '🏭' },
-  { id: 'mixed', label: 'Mixed Use', icon: '🔄' },
-  { id: 'commercial-land', label: 'Commercial Land', icon: '🌍' },
+  { id: 'office', label: 'Office', icon: '/icon/5.png' },
+  { id: 'retail', label: 'Retail / Shop', icon: '/icon/6.png' },
+  { id: 'warehouse', label: 'Warehouse', icon: '/icon/7.png' },
+  { id: 'showroom', label: 'Showroom', icon: '/icon/8.png' },
+  { id: 'restaurant', label: 'Restaurant / Cafe', icon: '/icon/9.png' },
+  { id: 'industrial', label: 'Industrial', icon: '/icon/10.png' },
+  { id: 'mixed', label: 'Mixed Use', icon: '/icon/11.png' },
+  { id: 'commercial-land', label: 'Commercial Land', icon: '/icon/12.png' },
 ];
 
-const positionTypes = ['Standard Apartment', 'Penthouse', 'Duplex', 'Serviced Apartment'];
+const rowTypes = ['Single Row', 'Back-to-Back'];
+
+const RES_POSITION_TYPES: Record<string, string[]> = {
+  apartment: ['Standard Apartment', 'Penthouse', 'Duplex', 'Serviced Apartment'],
+  villa: ['Stand alone', 'Twin Villa'],
+  townhouse: ['Corner Unit', 'End Unit', 'middle Unit'],
+  land: [],
+};
+
+const COM_POSITION_TYPES: Record<string, string[]> = {
+  office: [],
+  retail: ['Ground Floor', 'Mall Unit', 'Street level', 'High Street'],
+  warehouse: [],
+  showroom: ['Ground Floor', 'Mezzanine', 'Multi-level'],
+  restaurant: ['Stand alone'],
+  industrial: [],
+  mixed: [],
+  'commercial-land': [],
+};
+
+const COM_CONFIG_FALLBACK: Record<string, string> = {
+  office: 'Full Floor',
+  retail: '',
+  warehouse: '',
+  showroom: '',
+  restaurant: '',
+  industrial: '',
+  mixed: '',
+  'commercial-land': '',
+};
+
+const getPositionTypeOptions = (property: PropertyType, subType: string) => {
+  return property === 'residential' ? RES_POSITION_TYPES[subType] ?? [] : COM_POSITION_TYPES[subType] ?? [];
+};
+
+const getDefaultPositionType = (property: PropertyType, subType: string) => {
+  const options = getPositionTypeOptions(property, subType);
+  return options[0] ?? '';
+};
 
 export default function PropertyListingForm() {
   const [propertyType, setPropertyType] = useState<PropertyType>('residential');
@@ -146,36 +186,37 @@ export default function PropertyListingForm() {
     configuration: '',
     selectedSubType: 'apartment',
     positionType: 'Standard Apartment',
+    rowType: 'Single Row',
 
     propertyStatus: { occupancy: 'all', completion: 'all', ownership: 'all' },
     availableFrom: 'q1-2026',
     occupancyRent: 'vacant',
 
-    bedrooms: 'any',
-    bathrooms: 'any',
+    bedrooms: 'studio',
+    bathrooms: '1',
 
     bua: '',
     buaUnit: 'sqft',
     plotSize: '',
-    parkingSpaces: 'any',
+    parkingSpaces: '1',
     parkingType: 'any',
-    features: 'type-here',
+    features: 'bathtub',
     propertyCondition: 'all',
-    furnishing: 'any',
-    chequePreference: 'any',
+    furnishing: 'fully-furnished',
+    chequePreference: '1-cheque',
     amenities: 'multi-select',
     viewingOption: 'multi-select',
 
     financeMethod: ['cash'],
     targetClosingDate: 'q1-2026',
-    urgencyLevelSale: 'quick-sale',
+    urgencyLevelSale: 'actively-looking',
 
     keyMoney: 'no',
     keyMoneyType: '',
     tenantPreference: '',
-    preferredLeaseLength: '1 year',
-    moveInDate: 'march-1-2026',
-    urgencyLevelRent: 'ready-to-move',
+    preferredLeaseLength: '1-year',
+    moveInDate: 'jan-2026',
+    urgencyLevelRent: 'actively-looking',
 
     keywords: '',
     privateListingOffMarket: true,
@@ -198,6 +239,24 @@ export default function PropertyListingForm() {
     setFormData((p) => ({ ...p, [key]: value }));
   };
 
+  const selectedSubTypeLabel = useMemo(() => {
+    return subTypes.find((t) => t.id === formData.selectedSubType)?.label ?? formData.selectedSubType;
+  }, [subTypes, formData.selectedSubType]);
+
+  const positionTypeOptions = useMemo(() => {
+    return getPositionTypeOptions(propertyType, formData.selectedSubType);
+  }, [propertyType, formData.selectedSubType]);
+
+  const showRowType = isResidential && (formData.selectedSubType === 'villa' || formData.selectedSubType === 'townhouse');
+  // const showConfigurationInput =
+  //   (isResidential && formData.selectedSubType === 'villa') || (isCommercial && formData.selectedSubType === 'office');
+
+  const configPosition =
+    positionTypeOptions.length > 0 ? formData.positionType : COM_CONFIG_FALLBACK[formData.selectedSubType] ?? '';
+  const configLine = [selectedSubTypeLabel, configPosition, showRowType ? formData.rowType : '']
+    .filter(Boolean)
+    .join(' - ');
+
   const resetForTabs = (nextProperty: PropertyType, nextTxn: TransactionType) => {
     const nextIsRes = nextProperty === 'residential';
     const nextIsSale = nextTxn === 'sale';
@@ -205,7 +264,8 @@ export default function PropertyListingForm() {
     setFormData((p) => ({
       ...p,
       selectedSubType: nextIsRes ? 'apartment' : 'office',
-      positionType: 'Standard Apartment',
+      positionType: getDefaultPositionType(nextProperty, nextIsRes ? 'apartment' : 'office'),
+      rowType: 'Single Row',
       configuration: '',
       // keep shared values, but clear non-applicable fields for less “jump”
       depositAmount: nextIsSale ? '' : p.depositAmount,
@@ -227,6 +287,16 @@ export default function PropertyListingForm() {
     resetForTabs(propertyType, type);
   };
 
+  const onSelectSubType = (id: string) => {
+    const nextPosition = getDefaultPositionType(propertyType, id);
+    setFormData((p) => ({
+      ...p,
+      selectedSubType: id,
+      positionType: nextPosition,
+      rowType: 'Single Row',
+    }));
+  };
+
   const toggleDealSignal = (s: DealSignal) => {
     setFormData((p) => {
       const exists = p.dealSignals.includes(s);
@@ -235,7 +305,7 @@ export default function PropertyListingForm() {
   };
 
   return (
-    <div className="bg-[#F8F9FA]">
+    <div className="bg-[#F8F9FA] py-10">
       {/* Top tabs */}
       <div className="pt-4 pb-14">
         <div className="container mx-auto flex flex-col items-center gap-3 px-4">
@@ -288,7 +358,7 @@ export default function PropertyListingForm() {
         <div className="rounded-tl-[8px] rounded-tr-[8px] bg-[#F88379] px-5 py-6 text-white">
           <button
             type="button"
-            className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-white/90 underline-offset-2 hover:underline"
+            className="mb-3 inline-flex items-ce#FFFFFFnter gap-2 text-sm font-medium text-white/90 underline-offset-2 hover:underline"
           >
             <ChevronLeft className="h-4 w-4" />
             Go Back
@@ -303,9 +373,16 @@ export default function PropertyListingForm() {
 
         <form className="space-y-7 bg-white px-5 py-6 text-[#3d4350]">
           {/* Top fields (exact like images) */}
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <Label className={labelClass}>{isRent ? 'Preferred Locations *' : 'Location *'}</Label>
+          <div className="grid gap-4 md:grid-cols-12">
+            <div className="md:col-span-7">
+              
+              <Label className={`${labelClass} flex gap-2 items-center`}>
+                <span><MapPin className='w-4 h-4' /></span>
+                {isRent ? 'Preferred Locations *' : 'Location *'}
+                <span>
+                      <BadgeInfo className='w-4 h-4' />
+                </span>
+              </Label>
               <Select value={formData.location} onValueChange={(v) => setField('location', v)}>
                 <SelectTrigger className={controlClass}>
                   <SelectValue placeholder={isRent ? 'Area, community, cluster or building' : 'Area, community, cluster or building'} />
@@ -323,9 +400,12 @@ export default function PropertyListingForm() {
               {isSale && (
                 <div className="mt-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-[#6f7783]">Ideal for *</span>
+                    <span className="flex items-center gap-2 text-sm text-[#4B4B4B]">
+                      Ideal for *
+                      <BadgeInfo className="h-4 w-4" />
+                    </span>
                   </div>
-                  <div className="mt-2 grid grid-cols-3 rounded-[8px] border border-[#CAD5E2] bg-[#F1F5F9] p-1">
+                  <div className="mt-2 grid grid-cols-3 rounded-[8px]  bg-[#F1F5F9] p-1">
                     {[
                       { k: 'end-use', t: 'End-Use' },
                       { k: 'investment', t: 'Investment' },
@@ -347,7 +427,7 @@ export default function PropertyListingForm() {
               )}
             </div>
 
-            <div>
+            <div className="md:col-span-5">
              <div className=' relative '>
                <Label className={labelClass}>{isSale ? 'Expected Price (AED) *' : 'Expected Price (AED) *'}</Label>
               <Input
@@ -379,7 +459,7 @@ export default function PropertyListingForm() {
 
               {/* RENT: Monthly/Annually + Service charges (same row like image) */}
               {isRent && (
-                <div className="mt-3 grid grid-cols-2 gap-3">
+                <div className="mt-3 ">
                   <div className="inline-flex overflow-hidden rounded-[8px] border border-[#CAD5E2]">
                     <button
                       type="button"
@@ -401,15 +481,7 @@ export default function PropertyListingForm() {
                     </button>
                   </div>
 
-                  <div>
-                    <Label className="mb-2 block text-xs font-medium text-[#6f7783]">Service charges</Label>
-                    <Input
-                      className={controlClass}
-                      placeholder="22.50 p/sqft"
-                      value={formData.serviceCharges}
-                      onChange={(e) => setField('serviceCharges', e.target.value)}
-                    />
-                  </div>
+                
                 </div>
               )}
 
@@ -430,7 +502,7 @@ export default function PropertyListingForm() {
                           type="checkbox"
                           checked={formData.dealSignals.includes(x.k as DealSignal)}
                           onChange={() => toggleDealSignal(x.k as DealSignal)}
-                          
+                          className="relative h-4 w-4 appearance-none rounded-[3px] border border-black bg-[#DFFFF4] checked:bg-[#DFFFF4] checked:border-black checked:before:absolute checked:before:left-[5px] checked:before:top-[1px] checked:before:h-[9px] checked:before:w-[5px] checked:before:rotate-45 checked:before:border-2 checked:before:border-black checked:before:border-t-0 checked:before:border-l-0 checked:before:content-[''] focus:outline-none focus:ring-1 focus:ring-black/30"
                         />
                         {x.t}
                       </label>
@@ -438,7 +510,7 @@ export default function PropertyListingForm() {
                   </div>
 
                   <div>
-                    <Label className={labelClass}>4% DLD calculated*</Label>
+                    <Label className={`labelClass !text-[#4B4B4B]`}>4% DLD calculated*</Label>
                     <Input
                       className={controlClass}
                       placeholder="100,000"
@@ -453,8 +525,8 @@ export default function PropertyListingForm() {
 
           {/* RENT: Security deposit (left row like image) */}
           {isRent && (
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
+            <div className="grid items-center gap-4 md:grid-cols-12">
+              <div className="md:col-span-7">
                 <Label className={labelClass}>Security Deposit amount</Label>
                 <Input
                   className={controlClass}
@@ -463,13 +535,21 @@ export default function PropertyListingForm() {
                   onChange={(e) => setField('depositAmount', e.target.value)}
                 />
               </div>
-              <div />
+              <div className="md:col-span-5">
+                <Label className="mb-2 block text-xs font-medium text-[#6f7783]">Service charges</Label>
+                <Input
+                  className={controlClass}
+                  placeholder="22.50 p/sqft"
+                  value={formData.serviceCharges}
+                  onChange={(e) => setField('serviceCharges', e.target.value)}
+                />
+              </div>
             </div>
           )}
 
           {/* Property Type */}
           <section className="space-y-4">
-            <h2 className="text-[31px] font-semibold leading-none text-[#434853]">
+            <h2 className="text-[20px] font-medium leading-none text-[#4B4B4B]">
               Property Type* ( {isResidential ? 'Residential' : 'Commercial'} )
             </h2>
 
@@ -478,29 +558,33 @@ export default function PropertyListingForm() {
                 <button
                   key={type.id}
                   type="button"
-                  onClick={() => setField('selectedSubType', type.id)}
-                  className={`rounded-[8px] border border-[#CAD5E2] px-4 py-4 text-center text-sm font-medium transition ${
-                    formData.selectedSubType === type.id ? 'bg-[#fde7e5] text-[#3b3b3b]' : 'bg-white text-[#3b3b3b]'
+                  onClick={() => onSelectSubType(type.id)}
+                  className={`rounded-[8px] border border-[#FFC1BC] px-4 py-2 text-center text-base text-[#4B4B4B] font-medium transition ${
+                    formData.selectedSubType === type.id ? 'bg-[#FFDEDB] text-[#3b3b3b]' : 'bg-white text-[#3b3b3b]'
                   }`}
                 >
-                  <span className="mb-1 block text-base">{type.icon}</span>
+                  {type.icon.startsWith('/') ? (
+                    <Image src={type.icon} width={1000} height={1000} alt={type.label} className="mx-auto mb-1 h-6 w-6" />
+                  ) : (
+                    <span className="mb-1 block text-base">{type.icon}</span>
+                  )}
                   {type.label}
                 </button>
               ))}
             </div>
 
-            {/* Residential: Position type (both sale & rent) */}
-            {isResidential && (
-              <div>
-                <Label className={labelClass}>Position type</Label>
+            {/* Position type (conditional by subtype) */}
+            {positionTypeOptions.length > 0 && (
+              <div className=' space-y-2'>
+                <Label className={"text-xl text-[#4B4B4B] front-midium "}>Position type</Label>
                 <div className="grid gap-3 md:grid-cols-4">
-                  {positionTypes.map((item) => (
+                  {positionTypeOptions.map((item) => (
                     <button
                       key={item}
                       type="button"
                       onClick={() => setField('positionType', item)}
-                      className={`rounded-[8px] border border-[#CAD5E2] px-4 py-2 text-sm font-medium ${
-                        formData.positionType === item ? 'bg-[#fde7e5]' : 'bg-white'
+                      className={`rounded-[8px] border border-[#FFC1BC] px-4 py-2 text-sm font-medium ${
+                        formData.positionType === item ? 'bg-[#FFDEDB]' : 'bg-white'
                       }`}
                     >
                       {item}
@@ -510,24 +594,46 @@ export default function PropertyListingForm() {
               </div>
             )}
 
-            <div className="rounded-[8px] border border-[#CAD5E2] bg-[#fde7e5] px-3 py-2 text-xs text-[#e0776f]">
-              Select configuration : {formData.selectedSubType} - {isResidential ? formData.positionType : 'Full Floor'}
+            {showRowType && (
+              <div className=' space-y-2'>
+                <Label className={"text-xl text-[#4B4B4B] front-midium "}>Row type</Label>
+                <div className="grid gap-3 md:grid-cols-4">
+                  {rowTypes.map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => setField('rowType', item)}
+                      className={`rounded-[8px] border border-[#FFC1BC] px-4 py-2 text-sm font-medium ${
+                        formData.rowType === item ? 'bg-[#FFDEDB]' : 'bg-white'
+                      }`}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="rounded-[8px] border border-[#FFC1BC] bg-[#FFDEDB] px-3 py-3 text-xs text-[#e0776f]">
+              Select configuration : {configLine}
             </div>
 
-            <div>
-              <Label className={labelClass}>Configuration</Label>
-              <Input
-                className={controlClass}
-                placeholder="Type Configuration"
-                value={formData.configuration}
-                onChange={(e) => setField('configuration', e.target.value)}
-              />
-            </div>
+          
+              <div className=' space-y-2'>
+                <Label className="text-xl text-[#4B4B4B] font-medium">Configuration</Label>
+                <Input
+                  className={`${controlClass} placeholder:text-[#A5A5A5] `}
+                  placeholder="Type Configuration"
+                  value={formData.configuration}
+                  onChange={(e) => setField('configuration', e.target.value)}
+                />
+              </div>
+       
           </section>
 
           {/* Property Status */}
           <section className="space-y-4">
-            <h3 className="text-[31px] font-semibold leading-none text-[#434853]">Property Status*</h3>
+            <h3 className="text-[20px] font-medium leading-none text-[#4B4B4B]">Property Status*</h3>
 
             {/* RENT status (image 3/4) */}
             {isRent ? (
@@ -562,9 +668,13 @@ export default function PropertyListingForm() {
                     <SelectTrigger className={controlClass}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
+                    <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
                       <SelectItem value="q1-2026">Q1 2026</SelectItem>
                       <SelectItem value="q2-2026">Q2 2026</SelectItem>
+                      <SelectItem value="q3-2026">Q3 2026</SelectItem>
+                      <SelectItem value="q4-2026">Q4 2026</SelectItem>
+                      <SelectItem value="jan-2026">January 2026</SelectItem>
+                      <SelectItem value="feb-2026">February 2026</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -615,6 +725,7 @@ export default function PropertyListingForm() {
                             } as PropertyStatus)
                           }
                           className={`rounded-[8px] px-2 py-2 text-xs font-medium ${
+                            //eslint-disable-next-line
                             (formData.propertyStatus as any)[group.key] === item.v ? 'bg-white' : ''
                           }`}
                         >
@@ -631,33 +742,44 @@ export default function PropertyListingForm() {
             {isResidential && (
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <Label className={labelClass}>Bedrooms *</Label>
+                  <Label className={`${labelClass} flex items-center gap-2`}>
+                    Bedrooms *
+                    <BadgeInfo className="h-4 w-4" />
+                  </Label>
                   <Select value={formData.bedrooms} onValueChange={(v) => setField('bedrooms', v)}>
                     <SelectTrigger className={controlClass}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                      <SelectItem value="any">Any</SelectItem>
+                    <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
+                      <SelectItem value="studio">Studio</SelectItem>
                       <SelectItem value="1">1</SelectItem>
                       <SelectItem value="2">2</SelectItem>
                       <SelectItem value="3">3</SelectItem>
-                      <SelectItem value="4">4+</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                      <SelectItem value="5">5</SelectItem>
+                      <SelectItem value="6">6</SelectItem>
+                      <SelectItem value="7">7</SelectItem>
+                      <SelectItem value="8-plus">8+</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <Label className={labelClass}>Bathrooms *</Label>
+                  <Label className={`${labelClass} flex items-center gap-2`}>
+                    Bathrooms *
+                    <BadgeInfo className="h-4 w-4" />
+                  </Label>
                   <Select value={formData.bathrooms} onValueChange={(v) => setField('bathrooms', v)}>
                     <SelectTrigger className={controlClass}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                      <SelectItem value="any">Any</SelectItem>
+                    <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
                       <SelectItem value="1">1</SelectItem>
                       <SelectItem value="2">2</SelectItem>
                       <SelectItem value="3">3</SelectItem>
-                      <SelectItem value="4">4+</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                      <SelectItem value="5">5</SelectItem>
+                      <SelectItem value="6-plus">6+</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -667,7 +789,7 @@ export default function PropertyListingForm() {
 
           {/* Additional Details (same across) */}
           <section className="space-y-4">
-            <h3 className="text-[31px] font-semibold leading-none text-[#434853]">Additional Details</h3>
+            <h3 className="text-[20px] font-medium leading-none text-[#3D4350]">Additional Details</h3>
 
             <div className="grid gap-4 md:grid-cols-4">
               <div>
@@ -707,16 +829,21 @@ export default function PropertyListingForm() {
               </div>
 
               <div>
-                <Label className={labelClass}>Parking Spaces (Min)</Label>
+                <Label className={`${labelClass} flex items-center gap-2`}>
+                  Parking Spaces (Min)
+                  <BadgeInfo className="h-4 w-4" />
+                </Label>
                 <Select value={formData.parkingSpaces} onValueChange={(v) => setField('parkingSpaces', v)}>
                   <SelectTrigger className={controlClass}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                    <SelectItem value="any">Any</SelectItem>
+                  <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
                     <SelectItem value="1">1</SelectItem>
                     <SelectItem value="2">2</SelectItem>
-                    <SelectItem value="3">3+</SelectItem>
+                    <SelectItem value="3">3</SelectItem>
+                    <SelectItem value="4">4</SelectItem>
+                    <SelectItem value="5">5</SelectItem>
+                    <SelectItem value="6-plus">6+</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -727,7 +854,7 @@ export default function PropertyListingForm() {
                   <SelectTrigger className={controlClass}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
+                  <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
                     <SelectItem value="any">Any</SelectItem>
                     <SelectItem value="covered">Covered</SelectItem>
                     <SelectItem value="uncovered">Uncovered</SelectItem>
@@ -743,10 +870,15 @@ export default function PropertyListingForm() {
                   <SelectTrigger className={controlClass}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                    <SelectItem value="type-here">Type here</SelectItem>
-                    <SelectItem value="pool">Pool</SelectItem>
+                  <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
+                    <SelectItem value="bathtub">Bathtub</SelectItem>
                     <SelectItem value="balcony">Balcony</SelectItem>
+                    <SelectItem value="pet-allowed">Pet allowed</SelectItem>
+                    <SelectItem value="chiller-free">Chiller Free</SelectItem>
+                    <SelectItem value="maids-room">Maid&apos;s Room</SelectItem>
+                    <SelectItem value="study">Study</SelectItem>
+                    <SelectItem value="vastu-compliant">Vastu Compliant</SelectItem>
+                    <SelectItem value="type">Type</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -757,10 +889,17 @@ export default function PropertyListingForm() {
                   <SelectTrigger className={controlClass}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
+                  <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
                     <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="new">New</SelectItem>
-                    <SelectItem value="good">Good</SelectItem>
+                    <SelectItem value="brand-new">Brand new</SelectItem>
+                    <SelectItem value="nearly-new">Nearly new</SelectItem>
+                    <SelectItem value="fully-renovated">Fully Renovated</SelectItem>
+                    <SelectItem value="upgraded">Upgraded</SelectItem>
+                    <SelectItem value="excellent">Excellent</SelectItem>
+                    <SelectItem value="fair">Fair</SelectItem>
+                    <SelectItem value="needs-updating">Needs Updating</SelectItem>
+                    <SelectItem value="original">Original</SelectItem>
+                    <SelectItem value="type-property-age">Type property age</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -771,9 +910,9 @@ export default function PropertyListingForm() {
                   <SelectTrigger className={controlClass}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                    <SelectItem value="any">Any</SelectItem>
-                    <SelectItem value="furnished">Furnished</SelectItem>
+                  <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
+                    <SelectItem value="fully-furnished">Fully Furnished</SelectItem>
+                    <SelectItem value="semi-furnished">Semi-Furnished</SelectItem>
                     <SelectItem value="unfurnished">Unfurnished</SelectItem>
                   </SelectContent>
                 </Select>
@@ -790,10 +929,13 @@ export default function PropertyListingForm() {
                   <SelectTrigger className={controlClass}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                    <SelectItem value="any">Any</SelectItem>
-                    <SelectItem value="1">1 Cheque</SelectItem>
-                    <SelectItem value="2">2 Cheques</SelectItem>
+                  <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
+                    <SelectItem value="1-cheque">1 Cheque</SelectItem>
+                    <SelectItem value="2-cheques">2 Cheques</SelectItem>
+                    <SelectItem value="3-cheques">3 Cheques</SelectItem>
+                    <SelectItem value="4-cheques">4 Cheques</SelectItem>
+                    <SelectItem value="6-cheques">6 Cheques</SelectItem>
+                    <SelectItem value="12-cheques">12 Cheques</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -806,8 +948,11 @@ export default function PropertyListingForm() {
                   <SelectTrigger className={controlClass}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                    <SelectItem value="multi-select">Multi select</SelectItem>
+                  <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
+                    <SelectItem value="building-community">Building/community</SelectItem>
+                    <SelectItem value="unit-level">Unit-level Amenities</SelectItem>
+                    <SelectItem value="private-amenities">Private Amenities</SelectItem>
+                    <SelectItem value="type-amenities">Type amenities</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -818,18 +963,87 @@ export default function PropertyListingForm() {
                   <SelectTrigger className={controlClass}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                    <SelectItem value="multi-select">Multi select</SelectItem>
+                  <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
+                    <SelectItem value="floor-plans">Floor Plans</SelectItem>
+                    <SelectItem value="360-tour">360 Tour</SelectItem>
+                    <SelectItem value="property-tour">Property Tour</SelectItem>
+                    <SelectItem value="live-viewing">Live Viewing</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
+            {isSale && (
+              <>
+                <div>
+                  <Label className={labelClass}>Preferred Finance Method *</Label>
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {[
+                      { k: 'cash', t: 'Cash Buyer' },
+                      { k: 'mortgage', t: 'Mortgage Buyer' },
+                      { k: 'payment-plan', t: 'Payment Plan ( Off-plan )' },
+                    ].map((x) => (
+                      <label
+                        key={x.k}
+                        className="flex items-center gap-2 rounded-[8px] border border-[#CAD5E2] bg-white px-3 py-3 text-sm"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.financeMethod.includes(x.k)}
+                          onChange={() =>
+                            setField(
+                              'financeMethod',
+                              formData.financeMethod.includes(x.k)
+                                ? formData.financeMethod.filter((v) => v !== x.k)
+                                : [...formData.financeMethod, x.k]
+                            )
+                          }
+                        />
+                        {x.t}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <Label className={labelClass}>Target Closing Date*</Label>
+                    <Select value={formData.targetClosingDate} onValueChange={(v) => setField('targetClosingDate', v)}>
+                      <SelectTrigger className={controlClass}>
+                        <SelectValue />
+                      </SelectTrigger>
+                    <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
+                      <SelectItem value="q1-2026">Q1 2026</SelectItem>
+                      <SelectItem value="q2-2026">Q2 2026</SelectItem>
+                      <SelectItem value="q3-2026">Q3 2026</SelectItem>
+                      <SelectItem value="q4-2026">Q4 2026</SelectItem>
+                      <SelectItem value="jan-2026">January 2026</SelectItem>
+                      <SelectItem value="feb-2026">February 2026</SelectItem>
+                    </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className={labelClass}>Urgency Level*</Label>
+                    <Select value={formData.urgencyLevelSale} onValueChange={(v) => setField('urgencyLevelSale', v)}>
+                      <SelectTrigger className={controlClass}>
+                        <SelectValue />
+                      </SelectTrigger>
+                    <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
+                      <SelectItem value="actively-looking">Actively Looking</SelectItem>
+                      <SelectItem value="within-30-days">With in 30 Days</SelectItem>
+                      <SelectItem value="flexible-timeline">Flexible Time-line</SelectItem>
+                      <SelectItem value="exploring-option">Exploring option</SelectItem>
+                    </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </>
+            )}
           </section>
 
           {/* RENT: Preferred Tenant Information (image 3/4) */}
           {isRent && (
             <section className="space-y-4">
-              <h3 className="text-[31px] font-semibold leading-none text-[#434853]">Preferred Tenant Information*</h3>
+              <h3 className="text-[20px] font-semibold leading-none text-[#4B4B4B]">Preferred Tenant Information*</h3>
 
               {/* Commercial rent Key Money (image 4) */}
               {isCommercial && (
@@ -881,9 +1095,12 @@ export default function PropertyListingForm() {
                     <SelectTrigger className={controlClass}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                      <SelectItem value="1 year">1 year ( Standard )</SelectItem>
-                      <SelectItem value="2 years">2 years</SelectItem>
+                    <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
+                      <SelectItem value="less-than-1-year">less then 1 year ( short term )</SelectItem>
+                      <SelectItem value="1-year">1 Year ( standard )</SelectItem>
+                      <SelectItem value="2-years">2 Years</SelectItem>
+                      <SelectItem value="3-years">3 Years</SelectItem>
+                      <SelectItem value="4-years-plus">4 Years +</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -896,8 +1113,13 @@ export default function PropertyListingForm() {
                     <SelectTrigger className={controlClass}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                      <SelectItem value="march-1-2026">March 1st 2026</SelectItem>
+                    <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
+                      <SelectItem value="q1-2026">Q1 2026</SelectItem>
+                      <SelectItem value="q2-2026">Q2 2026</SelectItem>
+                      <SelectItem value="q3-2026">Q3 2026</SelectItem>
+                      <SelectItem value="q4-2026">Q4 2026</SelectItem>
+                      <SelectItem value="jan-2026">January 2026</SelectItem>
+                      <SelectItem value="feb-2026">February 2026</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -908,9 +1130,11 @@ export default function PropertyListingForm() {
                     <SelectTrigger className={controlClass}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                      <SelectItem value="ready-to-move">Ready to move in Immediately</SelectItem>
-                      <SelectItem value="urgent">Urgent</SelectItem>
+                    <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
+                      <SelectItem value="actively-looking">Actively Looking</SelectItem>
+                      <SelectItem value="within-30-days">With in 30 Days</SelectItem>
+                      <SelectItem value="flexible-timeline">Flexible Time-line</SelectItem>
+                      <SelectItem value="exploring-option">Exploring option</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -921,7 +1145,7 @@ export default function PropertyListingForm() {
           {/* SALE: Buyer Profile (image 1/2) */}
           {isSale && (
             <section className="space-y-4">
-              <h3 className="text-[31px] font-semibold leading-none text-[#434853]">Buyer Profile*</h3>
+              {isCommercial && <h3 className="text-[31px] font-semibold leading-none text-[#434853]">Buyer Profile*</h3>}
 
               <div>
                 <Label className={labelClass}>Finance Method *</Label>
@@ -993,9 +1217,13 @@ export default function PropertyListingForm() {
                     <SelectTrigger className={controlClass}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
+                    <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
                       <SelectItem value="q1-2026">Q1 2026</SelectItem>
                       <SelectItem value="q2-2026">Q2 2026</SelectItem>
+                      <SelectItem value="q3-2026">Q3 2026</SelectItem>
+                      <SelectItem value="q4-2026">Q4 2026</SelectItem>
+                      <SelectItem value="jan-2026">January 2026</SelectItem>
+                      <SelectItem value="feb-2026">February 2026</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1006,9 +1234,11 @@ export default function PropertyListingForm() {
                     <SelectTrigger className={controlClass}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-[8px] border border-[#CAD5E2]">
-                      <SelectItem value="quick-sale">Quick Sale</SelectItem>
+                    <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
                       <SelectItem value="actively-looking">Actively Looking</SelectItem>
+                      <SelectItem value="within-30-days">With in 30 Days</SelectItem>
+                      <SelectItem value="flexible-timeline">Flexible Time-line</SelectItem>
+                      <SelectItem value="exploring-option">Exploring option</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1028,7 +1258,7 @@ export default function PropertyListingForm() {
           </section>
 
           {/* Private listing — show on ALL 4 forms (you asked) */}
-          <section className="flex items-center justify-between">
+          <section className="flex items-center  gap-x-5">
             <h3 className="text-[20px] font-semibold text-[#434853]">Private listing (off Market)</h3>
             <Switch checked={formData.privateListingOffMarket} onCheckedChange={(v) => setField('privateListingOffMarket', v)} />
           </section>
@@ -1053,16 +1283,18 @@ export default function PropertyListingForm() {
           <section className="space-y-4">
             <div className="rounded-[8px] border border-[#CAD5E2] bg-[#fff7df] p-4">
               <div className="mb-2 flex items-start gap-2 text-[#b7801f]">
-                <Info className="mt-0.5 h-4 w-4 flex-shrink-0" />
+              
                 <div>
-                  <h3 className="text-sm font-semibold">Listing Intent Notice</h3>
-                  <p className="text-sm">
-                    A property can only be marketed under a limited number of valid DLD listing permits. You may appoint up to a maximum of three agents, each holding a valid permit.
+                  <h3 className="text-base text-[#A65F00] font-semibold">Listing Intent Notice</h3>
+                  <p className="text-base text-[#A65F00] flex gap-2">
+                      <Info className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                    Listing Intent Notice
+A property can only be marketed under a limited number of valid DLD listing permits. You may appoint up to a maximum of three agents, each holding a valid permit. Appointing one agent (exclusive) is often preferred by agents, as it avoids duplicate listings, improves accountability, and allows stronger commitment to marketing and negotiations.
                   </p>
                 </div>
               </div>
 
-              <Label className="mb-1 block text-xs font-semibold text-[#71674f]">How many agents will represent this property? *</Label>
+              <Label className="mb-1 block text-sm font-semibold text-[#314158]">How many agents will represent this property? *</Label>
 
               <Select value={formData.agentsCount} onValueChange={(v) => setField('agentsCount', v)}>
                 <SelectTrigger className={controlClass}>
@@ -1080,8 +1312,8 @@ export default function PropertyListingForm() {
             {isSale && (
               <div className="space-y-3">
                 <div>
-                  <h4 className="text-sm font-semibold text-[#434853]">Seller Commission Stance *</h4>
-                  <p className="text-xs text-[#6f7783]">Are you offering a seller-paid commission or fee? (Visible to agents)</p>
+                  <h4 className="text-base font-medium text-[#4B4B4B]">Seller Commission Stance *</h4>
+                  <p className="text-sm text-[#4B4B4B]">Are you offering a seller-paid commission or fee? (Visible to agents)</p>
                 </div>
 
                 {[
@@ -1089,12 +1321,13 @@ export default function PropertyListingForm() {
                   { v: 'no', t: 'No - agent will need to be covered by buyer commission only' },
                   { v: 'negotiable', t: 'Negotiable - open to discussion' },
                 ].map((x) => (
-                  <label key={x.v} className="flex items-center gap-2 rounded-[8px] border border-[#CAD5E2] bg-white px-3 py-3 text-sm">
+                  <label key={x.v} className="flex items-center gap-2 rounded-[8px] border border-[#CAD5E2] bg-white px-3 py-3 text-base text-[#4B4B4B]">
                     <input
                       type="radio"
                       name="seller-commission"
                       checked={formData.sellerCommissionStance === x.v}
                       onChange={() => setField('sellerCommissionStance', x.v)}
+                      className="relative h-4 w-4 appearance-none rounded-[3px] border border-black bg-[#DFFFF4] checked:bg-[#DFFFF4] checked:border-black checked:before:absolute checked:before:left-[5px] checked:before:top-[1px] checked:before:h-[9px] checked:before:w-[5px] checked:before:rotate-45 checked:before:border-2 checked:before:border-black checked:before:border-t-0 checked:before:border-l-0 checked:before:content-[''] focus:outline-none focus:ring-1 focus:ring-black/30"
                     />
                     {x.t}
                   </label>
@@ -1103,10 +1336,11 @@ export default function PropertyListingForm() {
             )}
 
             <div className="rounded-[8px] border border-[#CAD5E2] bg-[#fff7df] p-4">
-              <div className="flex items-start gap-2 text-[#b7801f]">
+              <div className="flex items-start gap-2 text-[#A65F00]">
                 <Info className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <p className="text-sm">
-                  <span className="font-semibold">Commission Notice:</span> As a {isRent ? 'landlord' : 'seller'}, you may choose to offer a {isRent ? 'landlord-paid' : 'seller-paid'} commission or incentive to support the {isRent ? 'leasing' : 'sale'} of your property.
+                  <span className="font-semibold">Commission Notice:</span> As a seller, you may choose to offer a seller-paid commission or a fixed fee to support the sale. While optional, this can attract more buyers, encourage stronger agent engagement and prioritisation. All commission or fee arrangements are discussed and agreed directly between the parties before proceeding Please note that some brokerages may have internal policies that prioritise listings offering a seller-paid commission or fee.
+
                 </p>
               </div>
             </div>
@@ -1116,15 +1350,16 @@ export default function PropertyListingForm() {
           <div className="grid gap-4 pb-2 md:grid-cols-2">
             <button
               type="button"
-              className="h-11 rounded-[8px] border border-[#CAD5E2] bg-[#d7d9dd] text-sm font-medium text-[#2e3239]"
+              className="h-11 rounded-[8px] border border-[#CAD5E2] bg-[#D7D7D7] text-sm font-medium text-[#2e3239]"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="h-11 rounded-[8px] bg-[#F88379] text-sm font-medium text-white hover:bg-[#ef746b]"
+              className="flex h-11 items-center justify-center gap-3 rounded-[8px] bg-[#F88379] text-sm font-medium text-white hover:bg-[#ef746b]"
             >
-              Post Listing Intent and Find Agents
+              <Send className="h-4 w-4" />
+              Post Listing Intent
             </button>
           </div>
         </form>
