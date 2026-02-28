@@ -1294,14 +1294,20 @@ export default function RequirementListingForm() {
 
             {/* Buyer Profile (Sale) */}
             {isSale && (
-              <section className="space-y-4">
-                <div className={`flex items-center gap-2 ${sectionTitleClass}`}>
-                  <span className="inline-block h-2 w-2 rounded-full" style={{ background: PRIMARY }} />
-                  Buyer Profile*
-                </div>
-
-                <div>
-                  <Label className={labelClass}>Finance Method *</Label>
+               <div className="relative">
+                  <Label className={labelClass}>Preferred Finance Method *</Label>
+                  <div className="absolute right-3 top-[50%] translate-y-[20%]">
+                    <InfoBadgeButton
+                      onClick={() =>
+                        openInfoModal(
+                          [
+                            'Payment plan terms are set by the developer and may vary by project. Buyers should confirm all schedules and timelines with the agent and developer.',
+                          ],
+                          'Payment Plan'
+                        )
+                      }
+                    />
+                  </div>
                   <div className="grid gap-3 md:grid-cols-3">
                     {[
                       { k: 'cash', t: 'Cash Buyer' },
@@ -1310,7 +1316,7 @@ export default function RequirementListingForm() {
                     ].map((x) => (
                       <label
                         key={x.k}
-                        className="flex items-center gap-2 rounded-[8px] border border-[#CAD5E2] bg-white px-3 py-3 text-[12px] font-medium text-[#2e3239]"
+                        className="flex items-center gap-2 rounded-[8px] border border-[#CAD5E2] bg-white px-3 py-3 text-sm"
                       >
                         <input
                           type="checkbox"
@@ -1323,84 +1329,12 @@ export default function RequirementListingForm() {
                                 : [...formData.financeMethod, x.k]
                             )
                           }
-                          className="h-4 w-4 rounded border-[#CAD5E2] accent-[#7FFFD4]"
                         />
                         {x.t}
                       </label>
                     ))}
                   </div>
                 </div>
-
-                {isCommercial && (
-                  <div>
-                    <Label className={labelClass}>
-                      Key Money*
-                      <InfoBadgeButton
-                        onClick={() =>
-                          openInfoModal(
-                            [
-                              'A one-time goodwill payment sometimes requested for commercial spaces that are fully or partially fitted and ready to operate, such as with existing fit-out, fixtures, or furniture.',
-                            ],
-                            'Key Money'
-                          )
-                        }
-                      />
-                    </Label>
-                    <div className="grid grid-cols-3 gap-3 rounded-[8px] border border-[#CAD5E2] bg-white px-3 py-2">
-                      {[
-                        { v: 'any', t: 'Any' },
-                        { v: 'no', t: 'No key money' },
-                        { v: 'yes', t: 'Key money acceptable' },
-                      ].map((x) => (
-                        <label key={x.v} className="flex items-center gap-2 text-[12px] font-medium text-[#2e3239]">
-                          <input
-                            type="radio"
-                            name="key-money-sale"
-                            checked={formData.keyMoney === x.v}
-                            onChange={() => setField('keyMoney', x.v as FormData['keyMoney'])}
-                            className="h-4 w-4 accent-[#7FFFD4]"
-                          />
-                          {x.t}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <Label className={labelClass}>Target Closing Date*</Label>
-                    <Select value={formData.targetClosingDate} onValueChange={(v) => setField('targetClosingDate', v)}>
-                      <SelectTrigger className={controlClass}>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
-                        <SelectItem value="q1-2026">Q1 2026</SelectItem>
-                        <SelectItem value="q2-2026">Q2 2026</SelectItem>
-                        <SelectItem value="q3-2026">Q3 2026</SelectItem>
-                        <SelectItem value="q4-2026">Q4 2026</SelectItem>
-                        <SelectItem value="jan-2026">January 2026</SelectItem>
-                        <SelectItem value="feb-2026">February 2026</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className={labelClass}>Urgency Level*</Label>
-                    <Select value={formData.urgencyLevelSale} onValueChange={(v) => setField('urgencyLevelSale', v)}>
-                      <SelectTrigger className={controlClass}>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-[8px] border border-[#CAD5E2] bg-white">
-                        <SelectItem value="actively-looking">Actively Looking</SelectItem>
-                        <SelectItem value="within-30-days">With in 30 Days</SelectItem>
-                        <SelectItem value="flexible-timeline">Flexible Time-line</SelectItem>
-                        <SelectItem value="exploring-option">Exploring option</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </section>
             )}
 
             {/* Optional Profile Information (Rent) */}
